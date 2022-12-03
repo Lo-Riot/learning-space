@@ -9,7 +9,7 @@ class Course(models.Model):
     description = models.CharField(max_length=250)
     rating = models.IntegerField(validators=[
         MinValueValidator(1), MaxValueValidator(10)
-    ])
+    ], default=0)
     image = models.ImageField(upload_to='uploads/')
 
 

@@ -15,7 +15,9 @@ class CourseList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = CourseSerializer(data=request.data)
+        serializer = CourseSerializer(
+            data=request.data, context={'user': request.user}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -11,7 +11,9 @@ class CourseSerializer(serializers.Serializer):
     creator = serializers.IntegerField(read_only=True)
 
     def create(self, validated_data):
-        return Course.objects.create(**validated_data)
+        return Course.objects.create(
+            **validated_data, creator=self.context["user"].id
+        )
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
