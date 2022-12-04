@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from courses.models import Course
+from account.models import Creator
 
 
 class CourseSerializer(serializers.Serializer):
@@ -12,7 +13,8 @@ class CourseSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Course.objects.create(
-            **validated_data, creator=self.context["user"].id
+            **validated_data,
+            creator=Creator.objects.get(user_id=self.context["user"].id)
         )
 
     def update(self, instance, validated_data):
