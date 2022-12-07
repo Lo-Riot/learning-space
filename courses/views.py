@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from courses.permissions import IsCreatorOrReadOnly
+from courses.permissions import IsAuthorOrReadOnly
 
 from courses.models import Course
 from courses.serializers import CourseSerializer
@@ -12,7 +12,7 @@ class CourseList(APIView):
     """List all courses"""
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsCreatorOrReadOnly
+        IsAuthorOrReadOnly
     ]
 
     def get(self, request):
@@ -34,7 +34,7 @@ class CourseDetail(APIView):
     """Create, get, update or delete a course"""
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsCreatorOrReadOnly
+        IsAuthorOrReadOnly
     ]
 
     def get(self, request, pk):

@@ -7,7 +7,7 @@ class User(AbstractUser):
     pass
 
 
-class Creator(models.Model):
+class Author(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )

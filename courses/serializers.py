@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from courses.models import Course
-from account.models import Creator
+from account.models import Author
 
 
 class CourseSerializer(serializers.Serializer):
@@ -9,12 +9,12 @@ class CourseSerializer(serializers.Serializer):
     description = serializers.CharField(max_length=250)
     rating = serializers.IntegerField(read_only=True)
     image = serializers.ImageField(required=False)
-    creator = serializers.ReadOnlyField(source='creator.user.username')
+    author = serializers.ReadOnlyField(source='author.user.username')
 
     def create(self, validated_data):
         return Course.objects.create(
             **validated_data,
-            creator=Creator.objects.get(user_id=self.context["user"].id)
+            author=Author.objects.get(user_id=self.context["user"].id)
         )
 
     def update(self, instance, validated_data):
