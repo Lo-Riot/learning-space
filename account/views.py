@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate, login
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
 
@@ -14,3 +16,20 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class UserLogin(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+
+        if request.user.is_authenticated:
+            return Response(status=status.HTTP_200_OK)
+        elif serializer.is_valid():
+            user = authenticate(request, **serializer.validated_data)
+            if user is not None:
+                login(request, user)
+                return Response(status=status.HTTP_200_OK)
+
+        return Response(
+            data=serializer.errors, status=status.HTTP_401_UNAUTHORIZED
+        )
