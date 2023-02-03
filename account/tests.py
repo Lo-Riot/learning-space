@@ -6,7 +6,7 @@ from account.models import User, Author
 from account.serializers import UserSerializer, AuthorSerializer
 
 
-class UserTestCase(APITestCase):
+class UserCreateTestCase(APITestCase):
     def setUp(self):
         self.user_data = {'username': "TestUser", 'password': "test"}
 
@@ -14,30 +14,29 @@ class UserTestCase(APITestCase):
         response = self.client.post(reverse('users'), data=self.user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_user_list(self):
-        user = User.objects.create(**self.user_data)
-        serializer = UserSerializer(user)
-        response = self.client.get(reverse('users'))
 
-        self.assertEqual(response.data, [serializer.data])
+class UserTestCase(APITestCase):
+    def setUp(self):
+        self.user_data = {'username': "TestUser", 'password': "test"}
+        self.user = User.objects.create_user(**self.user_data)
+        self.serializer = UserSerializer(self.user)
+
+    def test_user_list(self):
+        response = self.client.get(reverse('users'))
+        self.assertEqual(response.data, [self.serializer.data])
 
     def test_user_detail(self):
-        user = User.objects.create(**self.user_data)
-        serializer = UserSerializer(user)
-        response = self.client.get(reverse('user', args=[user.pk]))
-
-        self.assertEqual(response.data, serializer.data)
+        response = self.client.get(reverse('user', args=[self.user.pk]))
+        self.assertEqual(response.data, self.serializer.data)
 
     def test_user_login(self):
-        User.objects.create_user(**self.user_data)
         response = self.client.post(reverse('login'), data=self.user_data)
-
         self.assertEqual(
             response.status_code, status.HTTP_200_OK, msg=response.data
         )
 
 
-class AuthorTestCase(APITestCase):
+class AuthorCreateTestCase(APITestCase):
     def setUp(self):
         self.user_data = {'username': "TestUser", 'password': "test"}
 
@@ -45,27 +44,24 @@ class AuthorTestCase(APITestCase):
         response = self.client.post(reverse('authors'), data=self.user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_author_list(self):
-        user = User.objects.create_user(**self.user_data)
-        author = Author.objects.create(user=user)
-        serializer = AuthorSerializer(author)
-        response = self.client.get(reverse('authors'))
 
-        self.assertEqual(response.data, [serializer.data])
+class AuthorTestCase(APITestCase):
+    def setUp(self):
+        self.user_data = {'username': "TestUser", 'password': "test"}
+        user = User.objects.create_user(**self.user_data)
+        self.author = Author.objects.create(user=user)
+        self.serializer = AuthorSerializer(self.author)
+
+    def test_author_list(self):
+        response = self.client.get(reverse('authors'))
+        self.assertEqual(response.data, [self.serializer.data])
 
     def test_author_detail(self):
-        user = User.objects.create_user(**self.user_data)
-        author = Author.objects.create(user=user)
-        serializer = AuthorSerializer(author)
-        response = self.client.get(reverse('author', args=[author.pk]))
-
-        self.assertEqual(response.data, serializer.data)
+        response = self.client.get(reverse('author', args=[self.author.pk]))
+        self.assertEqual(response.data, self.serializer.data)
 
     def test_author_login(self):
-        user = User.objects.create_user(**self.user_data)
-        Author.objects.create(user=user)
         response = self.client.post(reverse('login'), data=self.user_data)
-
         self.assertEqual(
             response.status_code, status.HTTP_200_OK, msg=response.data
         )
