@@ -1,17 +1,13 @@
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
 
-from account.models import User
-from account.serializers import UserSerializer
+from account.models import User, Author
+from account.serializers import UserSerializer, AuthorSerializer
 
 
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
+class CreateUserEntityMixin:
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -20,9 +16,24 @@ class UserList(generics.ListAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserList(CreateUserEntityMixin, generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class AuthorList(CreateUserEntityMixin, generics.ListAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+
+class AuthorDetail(generics.RetrieveAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
 
 
 class UserLogin(APIView):
