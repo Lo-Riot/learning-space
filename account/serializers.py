@@ -18,13 +18,16 @@ class UserSerializer(serializers.Serializer):
 
 class AuthorSerializer(serializers.Serializer):
     id = serializers.IntegerField(source='user.id', read_only=True)
-    username = serializers.CharField(source='user.username', read_only=True)
-    password = serializers.CharField(write_only=True)
+    username = serializers.CharField(source='user.username')
+    password = serializers.CharField(source='user.password', write_only=True)
     courses = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def create(self, validated_data):
-        return Author.objects.create(**validated_data)
+        user = User.objects.create_user(**validated_data["user"])
+        return Author.objects.create(user=user)
 
     def update(self, instance, validated_data):
         # TODO: The author should receive an e-mail to confirm password reset
-        instance.password = validated_data.get('password', instance.password)
+        instance.user.password = validated_data.get(
+            'password', instance.user.password
+        )
