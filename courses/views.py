@@ -53,7 +53,7 @@ class CourseDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        course = get_object_or_404(Course, pk)
+        course = get_object_or_404(Course, pk=pk)
         self.check_object_permissions(request, course)
         course.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

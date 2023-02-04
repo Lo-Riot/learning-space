@@ -74,3 +74,7 @@ class CourseTestCase(APITestCase):
             cookies=self.user_cookies
         )
         self.assertEqual(response.data, self.serializer.data)
+
+    def test_course_delete(self):
+        response = self.client.delete(reverse('course', args=[self.course.pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
