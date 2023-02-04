@@ -9,7 +9,9 @@ class CourseSerializer(serializers.Serializer):
     description = serializers.CharField(max_length=250)
     rating = serializers.IntegerField(read_only=True)
     image = serializers.ImageField(required=False)
-    author = serializers.ReadOnlyField(source='author.user.username')
+    author = serializers.PrimaryKeyRelatedField(
+        source='author.user.pk', read_only=True
+    )
 
     def create(self, validated_data):
         return Course.objects.create(
