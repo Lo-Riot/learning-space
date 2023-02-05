@@ -17,12 +17,12 @@ class CreateUserEntityMixin:
 
 
 class UserList(CreateUserEntityMixin, generics.ListAPIView):
-    queryset = User.objects.all()
+    queryset = User.objects.filter(author__isnull=True)
     serializer_class = UserSerializer
 
 
 class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
+    queryset = User.objects.filter(author__isnull=True)
     serializer_class = UserSerializer
 
 

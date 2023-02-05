@@ -3,7 +3,7 @@ from .models import User, Author
 
 
 class UserSerializer(serializers.Serializer):
-    id = serializers.IntegerField(source='user.id', read_only=True)
+    id = serializers.IntegerField(read_only=True)
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
     courses = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
@@ -17,7 +17,7 @@ class UserSerializer(serializers.Serializer):
 
 
 class AuthorSerializer(serializers.Serializer):
-    id = serializers.IntegerField(source='user.id', read_only=True)
+    id = serializers.IntegerField(read_only=True)
     username = serializers.CharField(source='user.username')
     password = serializers.CharField(source='user.password', write_only=True)
     courses = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
