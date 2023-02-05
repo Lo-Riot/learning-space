@@ -50,7 +50,7 @@ class CourseTestCase(APITestCase):
     def setUp(self):
         user_data = {'username': "TestUser", 'password': "test"}
         user = User.objects.create_user(**user_data)
-        author = Author.objects.create(user=user)
+        self.author = Author.objects.create(user=user)
 
         self.user_cookies = self.client.post(
             reverse('login'), data=user_data
@@ -58,9 +58,10 @@ class CourseTestCase(APITestCase):
         self.course_data = {
             'name': "TestCourse",
             'description': "Course description",
-            'author': author
         }
-        self.course = Course.objects.create(**self.course_data)
+        self.course = Course.objects.create(
+            **self.course_data, author=self.author
+        )
         self.serializer = CourseSerializer(self.course)
 
     def test_course_list(self):
@@ -69,7 +70,12 @@ class CourseTestCase(APITestCase):
 
     def test_course_detail(self):
         response = self.client.get(reverse('course', args=[self.course.pk]))
+        author = Author.objects.get(pk=response.data['author'])
+
         self.assertEqual(response.data, self.serializer.data)
+        self.assertEqual(
+            CourseSerializer(author.course_set.all()[0]).data, response.data
+        )
 
     def test_course_update(self):
         updated_course_data = {
