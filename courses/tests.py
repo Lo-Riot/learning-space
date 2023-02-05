@@ -30,6 +30,7 @@ class CourseCreateTestCase(APITestCase):
             cookies=self.user_cookies
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['author'], self.course_data['author'])
 
     def test_course_create_with_image(self):
         with open(settings.MEDIA_ROOT / "uploads/test.jpg", 'rb') as image:
@@ -42,6 +43,7 @@ class CourseCreateTestCase(APITestCase):
                 cookies=self.user_cookies
             )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['author'], self.course_data['author'])
 
 
 class CourseTestCase(APITestCase):

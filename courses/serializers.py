@@ -10,7 +10,7 @@ class CourseSerializer(serializers.Serializer):
     rating = serializers.IntegerField(read_only=True)
     image = serializers.ImageField(required=False)
     author = serializers.PrimaryKeyRelatedField(
-        source='author.user.pk', read_only=True
+        source='author.pk', read_only=True
     )
 
     def create(self, validated_data):
