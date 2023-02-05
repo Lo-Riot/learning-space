@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    courses = models.ManyToManyField('courses.Course')
+    pass
 
 
 class Author(models.Model):
