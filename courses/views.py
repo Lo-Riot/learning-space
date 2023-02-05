@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from courses.permissions import IsAuthorOrReadOnly
@@ -36,6 +37,7 @@ class CourseDetail(APIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
     ]
+    parser_classes = [MultiPartParser]
 
     def get(self, request, pk):
         course = get_object_or_404(Course, pk=pk)

@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -28,6 +29,18 @@ class CourseCreateTestCase(APITestCase):
             data=self.course_data,
             cookies=self.user_cookies
         )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_course_create_with_image(self):
+        with open(settings.MEDIA_ROOT / "uploads/test.jpg", 'rb') as image:
+            updated_course_data = {'image': image}
+            updated_course_data.update(self.course_data)
+
+            response = self.client.post(
+                reverse('courses'),
+                data=updated_course_data,
+                cookies=self.user_cookies
+            )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
