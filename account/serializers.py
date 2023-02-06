@@ -9,7 +9,7 @@ class UserSerializer(serializers.Serializer):
     courses = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def create(self, validated_data):
-        return User.objects.create(**validated_data)
+        return User.objects.create_user(**validated_data)
 
     def update(self, instance, validated_data):
         # TODO: The user should receive an e-mail to confirm password reset
