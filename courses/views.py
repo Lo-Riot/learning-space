@@ -9,17 +9,14 @@ from courses.models import Course, Lesson
 from courses.serializers import CourseSerializer, LessonSerializer
 
 
-class CourseList(APIView):
+class CourseList(generics.ListCreateAPIView):
     """List all courses"""
+    serializer_class = CourseSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
     ]
-
-    def get(self, request):
-        courses = Course.objects.all()
-        serializer = CourseSerializer(courses, many=True)
-        return Response(serializer.data)
+    queryset = Course.objects.all()
 
     def post(self, request):
         serializer = CourseSerializer(
