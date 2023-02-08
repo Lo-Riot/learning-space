@@ -7,8 +7,10 @@ from account.serializers import UserSerializer, AuthorSerializer
 
 
 class UserCreateTestCase(APITestCase):
-    def setUp(self):
-        self.user_data = {'username': "TestUser", 'password': "test"}
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user_data = {'username': "TestUser", 'password': "test"}
 
     def test_user_create(self):
         response = self.client.post(reverse('users'), data=self.user_data)
@@ -16,9 +18,13 @@ class UserCreateTestCase(APITestCase):
 
 
 class UserTestCase(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user_data = {'username': "TestUser", 'password': "test"}
+        cls.user = User.objects.create_user(**cls.user_data)
+
     def setUp(self):
-        self.user_data = {'username': "TestUser", 'password': "test"}
-        self.user = User.objects.create_user(**self.user_data)
         self.serializer = UserSerializer(self.user)
 
     def test_user_list(self):
@@ -43,8 +49,10 @@ class UserTestCase(APITestCase):
 
 
 class AuthorCreateTestCase(APITestCase):
-    def setUp(self):
-        self.user_data = {'username': "TestUser", 'password': "test"}
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user_data = {'username': "TestUser", 'password': "test"}
 
     def test_author_create(self):
         response = self.client.post(reverse('authors'), data=self.user_data)
@@ -52,10 +60,16 @@ class AuthorCreateTestCase(APITestCase):
 
 
 class AuthorTestCase(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        user = User.objects.create_user(
+            username="TestUser",
+            password="test"
+        )
+        cls.author = Author.objects.create(user=user)
+
     def setUp(self):
-        user_data = {'username': "TestUser", 'password': "test"}
-        user = User.objects.create_user(**user_data)
-        self.author = Author.objects.create(user=user)
         self.serializer = AuthorSerializer(self.author)
 
     def test_author_list(self):
