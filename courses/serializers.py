@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from courses.models import Course, Lesson
-from account.models import Author
+from account.models import User, Author
 
 
 class CourseSerializer(serializers.Serializer):
@@ -26,6 +26,16 @@ class CourseSerializer(serializers.Serializer):
         )
         instance.save()
         return instance
+
+
+class EnrollmentSerializer(serializers.Serializer):
+    course = serializers.IntegerField(source='pk')
+
+    def create(self, validated_data):
+        course = Course.objects.get(**validated_data)
+        user = User.objects.get(pk=self.context["user_pk"])
+        user.enrollments.add(course)
+        return course
 
 
 class LessonSerializer(serializers.Serializer):
