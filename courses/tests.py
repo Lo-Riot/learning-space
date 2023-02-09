@@ -5,7 +5,9 @@ from rest_framework.test import APITestCase
 
 from account.models import User, Author
 from courses.models import Course, Lesson
-from courses.serializers import CourseSerializer, LessonSerializer
+from courses.serializers import (
+    CourseSerializer, LessonSerializer
+)
 
 
 class CourseCreateTestCase(APITestCase):
@@ -183,3 +185,64 @@ class LessonTestCase(APITestCase):
             'lesson', args=[self.course.pk, self.lesson.pk]
         ))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class EnrollmentCreateTestCase(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        user = User.objects.create_user(
+            username="TestUser",
+            password="test"
+        )
+        cls.author = Author.objects.create(user=user)
+        cls.course = Course.objects.create(
+            name="TestCourse",
+            description="Course description",
+            author=cls.author,
+        )
+        cls.unauth_user = User.objects.create_user(
+            username="TestUnauthUser",
+            password="test"
+        )
+
+    def setUp(self):
+        self.client.force_login(self.unauth_user)
+
+    def test_enroll(self):
+        response = self.client.post(
+            reverse('enrollments', args=[self.unauth_user.pk]),
+            data={'course': self.course.pk}
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class EnrollmentTestCase(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        user = User.objects.create_user(
+            username="TestUser",
+            password="test"
+        )
+        cls.author = Author.objects.create(user=user)
+        cls.course = Course.objects.create(
+            name="TestCourse",
+            description="Course description",
+            author=cls.author,
+        )
+        cls.unauth_user = User.objects.create_user(
+            username="TestUnauthUser",
+            password="test"
+        )
+        cls.unauth_user.enrollments.add(cls.course)
+
+    def setUp(self):
+        self.client.force_login(self.author.user)
+        self.serializer = CourseSerializer(self.course)
+
+    def test_enrollment_list(self):
+        response = self.client.get(reverse(
+            'enrollments', args=[self.unauth_user.pk]
+        ))
+        self.assertEqual(response.data, [self.serializer.data])

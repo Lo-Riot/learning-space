@@ -6,7 +6,9 @@ from rest_framework import generics, status, permissions
 from courses.permissions import IsAuthorOrReadOnly
 
 from courses.models import Course, Lesson
-from courses.serializers import CourseSerializer, LessonSerializer
+from courses.serializers import (
+    CourseSerializer, EnrollmentSerializer, LessonSerializer
+)
 
 
 class CourseList(generics.ListCreateAPIView):
@@ -19,7 +21,7 @@ class CourseList(generics.ListCreateAPIView):
     queryset = Course.objects.all()
 
     def post(self, request):
-        serializer = CourseSerializer(
+        serializer = self.serializer_class(
             data=request.data, context={'user': request.user}
         )
         if serializer.is_valid():
@@ -95,3 +97,30 @@ class LessonDetail(generics.RetrieveUpdateDestroyAPIView):
         )
         self.check_object_permissions(self.request, obj.course)
         return obj
+
+
+class EnrollmentList(generics.ListCreateAPIView):
+    serializer_class = EnrollmentSerializer
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+    ]
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return EnrollmentSerializer
+        elif self.request.method == "GET":
+            return CourseSerializer
+
+        return self.serializer_class
+
+    def get_queryset(self):
+        return Course.objects.filter(user__id=self.kwargs["pk"])
+
+    def post(self, request, pk):
+        serializer = self.serializer_class(
+            data=request.data, context={'user_pk': self.kwargs["pk"]}
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
