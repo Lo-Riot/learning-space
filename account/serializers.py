@@ -6,7 +6,7 @@ class UserSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
-    courses = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    enrollments = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
