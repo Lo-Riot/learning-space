@@ -5,7 +5,9 @@ from account.models import User, Author
 
 class Course(models.Model):
     name = models.CharField(max_length=50)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        Author, related_name="courses", on_delete=models.CASCADE
+    )
     description = models.CharField(max_length=250)
     rating = models.IntegerField(validators=[
         MinValueValidator(1), MaxValueValidator(10)
