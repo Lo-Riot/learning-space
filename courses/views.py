@@ -11,12 +11,18 @@ from courses.serializers import (
 
 
 class CourseList(generics.ListCreateAPIView):
-    queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
     ]
+
+    def get_queryset(self):
+        queryset = Course.objects.all()
+        author = self.request.query_params.get('author')
+        if author is not None:
+            return queryset.filter(author__user__username=author)
+        return queryset
 
     def create(self, request):
         serializer = self.get_serializer(

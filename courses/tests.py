@@ -87,6 +87,12 @@ class CourseTestCase(APITestCase):
         response = self.client.get(reverse('courses'))
         self.assertEqual(response.data, [self.serializer.data])
 
+        response = self.client.get(
+            reverse('courses'),
+            data={'author': self.author.user.username}
+        )
+        self.assertEqual(response.data, [self.serializer.data])
+
     def test_course_detail(self):
         response = self.client.get(reverse('course', args=[self.course.pk]))
         self.assertEqual(response.data, self.serializer.data)
