@@ -7,16 +7,7 @@ from account.models import User, Author
 from account.serializers import UserSerializer, AuthorSerializer
 
 
-class CreateUserEntityMixin:
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UserList(CreateUserEntityMixin, generics.ListAPIView):
+class UserList(generics.ListCreateAPIView):
     queryset = User.objects.filter(author__isnull=True)
     serializer_class = UserSerializer
 
@@ -26,7 +17,7 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
 
-class AuthorList(CreateUserEntityMixin, generics.ListAPIView):
+class AuthorList(generics.ListCreateAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 
