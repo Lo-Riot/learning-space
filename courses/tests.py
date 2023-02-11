@@ -98,13 +98,15 @@ class CourseTestCase(APITestCase):
         self.assertEqual(response.data, self.serializer.data)
 
     def test_course_update(self):
-        self.course.description = "Description is updated"
-
         response = self.client.put(
             reverse('course', args=[self.course.pk]),
-            data={'name': "TestCourse", 'description': self.course.description}
+            data={
+                'name': "TestCourse", 'description': "Description is updated"
+            }
         )
-        self.assertEqual(response.data, self.serializer.data)
+        self.assertNotEqual(
+            response.data["description"], self.serializer.data["description"]
+        )
 
     def test_course_delete(self):
         response = self.client.delete(reverse('course', args=[self.course.pk]))

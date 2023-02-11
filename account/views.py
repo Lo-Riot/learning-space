@@ -12,7 +12,7 @@ class UserList(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 
 
-class UserDetail(generics.RetrieveAPIView):
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.filter(author__isnull=True)
     serializer_class = UserSerializer
 
@@ -22,7 +22,7 @@ class AuthorList(generics.ListCreateAPIView):
     serializer_class = AuthorSerializer
 
 
-class AuthorDetail(generics.RetrieveAPIView):
+class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 

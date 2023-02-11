@@ -41,6 +41,20 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.data, self.serializer.data)
         self.assertFalse(hasattr(user, "author"))
 
+    def test_user_update(self):
+        response = self.client.put(
+            reverse('user', args=[self.user.pk]),
+            data={
+                'username': self.user.username,
+                'password': "updated_test_password"
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_delete(self):
+        response = self.client.delete(reverse('user', args=[self.user.pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
     def test_user_login(self):
         response = self.client.post(reverse('login'), data=self.user_data)
         self.assertEqual(
@@ -79,3 +93,17 @@ class AuthorTestCase(APITestCase):
     def test_author_detail(self):
         response = self.client.get(reverse('author', args=[self.author.pk]))
         self.assertEqual(response.data, self.serializer.data)
+
+    def test_author_update(self):
+        response = self.client.put(
+            reverse('author', args=[self.author.pk]),
+            data={
+                'username': self.author.user.username,
+                'password': "updated_test_password"
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_author_delete(self):
+        response = self.client.delete(reverse('author', args=[self.author.pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

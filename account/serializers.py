@@ -13,7 +13,11 @@ class UserSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         # TODO: The user should receive an e-mail to confirm password reset
-        instance.password = validated_data.get('password', instance.password)
+        instance.set_password(validated_data.get(
+            'password', instance.password
+        ))
+        instance.save()
+        return instance
 
 
 class AuthorSerializer(serializers.Serializer):
@@ -28,6 +32,8 @@ class AuthorSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         # TODO: The author should receive an e-mail to confirm password reset
-        instance.user.password = validated_data.get(
+        instance.user.set_password(validated_data.get(
             'password', instance.user.password
-        )
+        ))
+        instance.save()
+        return instance
