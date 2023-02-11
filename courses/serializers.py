@@ -8,7 +8,7 @@ class CourseSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=50)
     description = serializers.CharField(max_length=250)
     rating = serializers.IntegerField(read_only=True)
-    image = serializers.ImageField(required=False)
+    image = serializers.ImageField(required=False, use_url=False)
     author = serializers.PrimaryKeyRelatedField(
         source='author.pk', read_only=True
     )

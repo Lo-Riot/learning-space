@@ -1,3 +1,4 @@
+import os
 from django.urls import reverse
 from django.conf import settings
 from rest_framework import status
@@ -52,7 +53,8 @@ class CourseCreateTestCase(APITestCase):
                 data=updated_course_data,
             )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['author'], self.author.pk)
+        self.assertEqual(response.data["author"], self.author.pk)
+        os.remove(settings.MEDIA_ROOT / response.data["image"])
 
     def test_course_create_unauth(self):
         self.client.force_login(self.unauth_user)
