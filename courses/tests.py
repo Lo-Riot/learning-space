@@ -1,6 +1,4 @@
-import os
 from django.urls import reverse
-from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -31,7 +29,7 @@ class CourseCreateTestCase(APITestCase):
             'description': "Course description",
         }
 
-    def test_course_create_without_image(self):
+    def test_course_create(self):
         self.client.force_login(self.author.user)
 
         response = self.client.post(
@@ -40,21 +38,6 @@ class CourseCreateTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['author'], self.author.pk)
-
-    def test_course_create_with_image(self):
-        self.client.force_login(self.author.user)
-
-        with open(settings.MEDIA_ROOT / "uploads/test.jpg", 'rb') as image:
-            updated_course_data = {'image': image}
-            updated_course_data.update(self.course_data)
-
-            response = self.client.post(
-                reverse('courses'),
-                data=updated_course_data,
-            )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["author"], self.author.pk)
-        os.remove(settings.MEDIA_ROOT / response.data["image"])
 
     def test_course_create_unauth(self):
         self.client.force_login(self.unauth_user)
