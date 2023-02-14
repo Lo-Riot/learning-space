@@ -18,6 +18,7 @@ class Course(models.Model):
 class Lesson(models.Model):
     name = models.CharField(max_length=50)
     content = models.TextField()
+    video = models.FileField(upload_to='uploads/', null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
 

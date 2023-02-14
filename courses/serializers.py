@@ -42,6 +42,7 @@ class LessonSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=50)
     content = serializers.CharField()
+    video = serializers.FileField(required=False)
     course = serializers.PrimaryKeyRelatedField(
         source='course.pk', read_only=True
     )
