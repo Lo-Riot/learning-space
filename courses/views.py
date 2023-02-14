@@ -16,6 +16,7 @@ class CourseList(generics.ListCreateAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
     ]
+    parser_classes = [MultiPartParser]
 
     def get_queryset(self):
         queryset = Course.objects.all()
@@ -42,7 +43,6 @@ class CourseDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
     ]
-    parser_classes = [MultiPartParser]
 
 
 class LessonList(generics.ListCreateAPIView):
@@ -51,6 +51,7 @@ class LessonList(generics.ListCreateAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
     ]
+    parser_classes = [MultiPartParser]
 
     def get_queryset(self):
         return Lesson.objects.filter(course=self.kwargs["course_pk"])
