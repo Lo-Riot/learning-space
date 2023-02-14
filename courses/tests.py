@@ -1,3 +1,6 @@
+from io import BytesIO
+from PIL import Image
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -7,6 +10,15 @@ from courses.models import Course, Lesson
 from courses.serializers import (
     CourseSerializer, LessonSerializer
 )
+
+
+def generate_image(filename: str, size: tuple = (1, 1)) -> BytesIO:
+    file_obj = BytesIO()
+    image = Image.new("RGBA", size, (0, 0, 0))
+    image.save(file_obj, "png")
+    file_obj.name = filename
+    file_obj.seek(0)
+    return file_obj
 
 
 class CourseCreateTestCase(APITestCase):
@@ -27,6 +39,7 @@ class CourseCreateTestCase(APITestCase):
         self.course_data = {
             'name': "TestCourse",
             'description': "Course description",
+            'image': generate_image("test.png"),
         }
 
     def test_course_create(self):
@@ -86,7 +99,9 @@ class CourseTestCase(APITestCase):
         response = self.client.put(
             reverse('course', args=[self.course.pk]),
             data={
-                'name': "TestCourse", 'description': "Description is updated"
+                'name': "TestCourse",
+                'description': "Description is updated",
+                'image': generate_image("test.png"),
             }
         )
         self.assertNotEqual(

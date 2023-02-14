@@ -8,7 +8,7 @@ class CourseSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=50)
     description = serializers.CharField(max_length=250)
     rating = serializers.IntegerField(read_only=True)
-    image = serializers.ImageField(required=False, use_url=False)
+    image = serializers.ImageField(use_url=False)
     author = serializers.PrimaryKeyRelatedField(
         source='author.pk', read_only=True
     )
@@ -24,6 +24,7 @@ class CourseSerializer(serializers.Serializer):
         instance.description = validated_data.get(
             'description', instance.description
         )
+        instance.image = validated_data.get('image', instance.image)
         instance.save()
         return instance
 
@@ -56,5 +57,6 @@ class LessonSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
         instance.content = validated_data.get('content', instance.content)
+        instance.video = validated_data.get('video', instance.video)
         instance.save()
         return instance
