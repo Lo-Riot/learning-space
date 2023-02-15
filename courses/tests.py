@@ -1,6 +1,8 @@
 from io import BytesIO
 from PIL import Image
+import os
 
+from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -21,6 +23,12 @@ def generate_image(filename: str, size: tuple = (1, 1)) -> BytesIO:
     return file_obj
 
 
+def remove_image(uploaded_image_filename: str) -> None:
+    uploaded_image_path = settings.MEDIA_ROOT / uploaded_image_filename
+    if os.path.isfile(uploaded_image_path):
+        os.remove(uploaded_image_path)
+
+
 class CourseCreateTestCase(APITestCase):
     @classmethod
     def setUpClass(cls):
@@ -36,11 +44,17 @@ class CourseCreateTestCase(APITestCase):
         )
 
     def setUp(self):
+        super().setUp()
         self.course_data = {
             'name': "TestCourse",
             'description': "Course description",
             'image': generate_image("test.png"),
         }
+        self.uploaded_image_filename = ''
+
+    def tearDown(self):
+        super().tearDown()
+        remove_image(self.uploaded_image_filename)
 
     def test_course_create(self):
         self.client.force_login(self.author.user)
@@ -49,8 +63,9 @@ class CourseCreateTestCase(APITestCase):
             reverse('courses'),
             data=self.course_data,
         )
+        self.uploaded_image_filename = response.data["image"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['author'], self.author.pk)
+        self.assertEqual(response.data["author"], self.author.pk)
 
     def test_course_create_unauth(self):
         self.client.force_login(self.unauth_user)
@@ -104,6 +119,7 @@ class CourseTestCase(APITestCase):
                 'image': generate_image("test.png"),
             }
         )
+        remove_image(response.data["image"])
         self.assertNotEqual(
             response.data["description"], self.serializer.data["description"]
         )
@@ -188,7 +204,7 @@ class LessonTestCase(APITestCase):
         )
         self.assertEqual(response.data, self.serializer.data)
 
-    def test_course_delete(self):
+    def test_lesson_delete(self):
         response = self.client.delete(reverse(
             'lesson', args=[self.course.pk, self.lesson.pk]
         ))
