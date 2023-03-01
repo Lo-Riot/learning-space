@@ -1,0 +1,15 @@
+.courses {
+    margin-top: 50px;
+}
+
+.rating {
+    color: gray;
+}
+
+.rating .checked {
+    color: orange;
+}
+
+.footer {
+    margin-top: 50px;
+}
