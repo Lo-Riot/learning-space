@@ -10,19 +10,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container-fluid">
-        <header class="navbar bg-body-tertiary">
-                <a class="navbar-brand" href="#">Learning Space</a>
-                <form class="d-flex w-50 ms-5 me-auto" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Основи Python">
-                    <button class="btn btn-outline-dark" type="submit">Знайти</button>
-                </form>
-                <a class="nav-link d-flex" href="#">
-                    <img class="rounded-circle border border-dark" src="./images/user-avatar.jpg" width="42" height="42">
-                    <span class="navbar-text ms-2">Username</span>
-                </a>
-        </header>
-    </div>
+    <header class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Learning Space</a>
+                    <form class="d-flex w-50 ms-5 me-auto" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Основи Python">
+                        <button class="btn btn-outline-dark" type="submit">Знайти</button>
+                    </form>
+                    <a class="nav-link d-flex" href="#">
+                        <img class="rounded-circle border border-dark" src="./images/user-avatar.jpg" width="42" height="42">
+                        <span class="navbar-text ms-2">Username</span>
+                    </a>
+        </div>
+    </header>
 
     <div class="courses container-fluid">
         <h3 class="mx-5">Нові курси</h3>
@@ -251,16 +251,15 @@
             </div>
         </div>
     </div>
-
-    <div class="container">
-        <footer class="py-3 my-4">
-                <div class="nav justify-content-center border-bottom pb-3 mb-2">
-                    <a class="nav-link px-2 text-muted" href="#">Про Нас</a>
-                    <a class="nav-link px-2 text-muted" href="#">Контакти</a>
-                    <a class="nav-link px-2 text-muted" href="#">API для розробників</a>
-                </div>
-                <p class="text-center text-muted">© 2023 Company, Inc</p>
-        </footer>
-    </div>
+    <footer class="py-3 my-4">
+        <div class="container">
+            <div class="nav justify-content-center border-bottom pb-3 mb-2">
+                <a class="nav-link px-2 text-muted" href="#">Про Нас</a>
+                <a class="nav-link px-2 text-muted" href="#">Контакти</a>
+                <a class="nav-link px-2 text-muted" href="#">API для розробників</a>
+            </div>
+            <p class="text-center text-muted">© 2023 Company, Inc</p>
+        </div>
+    </footer>
 </body>
 </html>
