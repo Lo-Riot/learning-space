@@ -19,10 +19,15 @@ class CourseList(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser]
 
     def get_queryset(self):
-        queryset = Course.objects.all()
         author = self.request.query_params.get('author')
+        order = self.request.query_params.get('order', "rating")
+        queryset = Course.objects.all().order_by(order)
+        # TODO: order by date
+
         if author is not None:
-            return queryset.filter(author__user__username=author)
+            return queryset.filter(
+                author__user__username=author
+            )
         return queryset
 
     def create(self, request):

@@ -108,6 +108,27 @@ class CourseTestCase(APITestCase):
         )
         self.assertEqual(response.data, [self.serializer.data])
 
+    def test_course_list_order(self):
+        courses = Course.objects.bulk_create([
+            Course(
+                name="TestCourse2",
+                description="Course description 2",
+                author=self.author
+            ),
+            Course(
+                name="TestCourse3",
+                description="Course description 3",
+                author=self.author
+            ),
+        ])
+        self.serializer = CourseSerializer(courses, many=True)
+
+        response = self.client.get(
+            reverse('courses'),
+            data={'order': "-id"}
+        )
+        self.assertEqual(response.data[0], self.serializer.data[-1])
+
     def test_course_detail(self):
         response = self.client.get(reverse('course', args=[self.course.pk]))
         self.assertEqual(response.data, self.serializer.data)
