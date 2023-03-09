@@ -44,6 +44,9 @@ class CourseDetail(generics.RetrieveUpdateDestroyAPIView):
         IsAuthorOrReadOnly
     ]
 
+    def perform_update(self, serializer):
+        serializer.save(partial=True)
+
 
 class LessonList(generics.ListCreateAPIView):
     serializer_class = LessonSerializer

@@ -54,6 +54,8 @@ class CourseCreateTestCase(APITestCase):
 
     def tearDown(self):
         super().tearDown()
+        # TODO: Remove this method, use 'remove_image' function
+        # inside the 'test_course_create'
         remove_image(self.uploaded_image_filename)
 
     def test_course_create(self):
@@ -116,12 +118,19 @@ class CourseTestCase(APITestCase):
             data={
                 'name': "TestCourse",
                 'description': "Description is updated",
-                'image': generate_image("test.png"),
             }
         )
-        remove_image(response.data["image"])
         self.assertNotEqual(
             response.data["description"], self.serializer.data["description"]
+        )
+
+    def test_course_partial_update(self):
+        response = self.client.patch(
+            reverse('course', args=[self.course.pk]),
+            data={'rating': 7}
+        )
+        self.assertNotEqual(
+            response.data["rating"], self.serializer.data["rating"]
         )
 
     def test_course_delete(self):
