@@ -129,6 +129,13 @@ class CourseTestCase(APITestCase):
         )
         self.assertEqual(response.data[0], self.serializer.data[-1])
 
+    def test_course_list_by_name(self):
+        response = self.client.get(  # Filter courses by name "Test"
+            reverse('courses'),
+            data={'name': self.course.name[:4]}
+        )
+        self.assertEqual(response.data, [self.serializer.data])
+
     def test_course_detail(self):
         response = self.client.get(reverse('course', args=[self.course.pk]))
         self.assertEqual(response.data, self.serializer.data)
