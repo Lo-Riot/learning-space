@@ -10,7 +10,7 @@ from rest_framework.test import APITestCase
 from account.models import User, Author
 from courses.models import Course, Lesson
 from courses.serializers import (
-    CourseSerializer, LessonSerializer
+    CourseSerializer, EnrollmentSerializer, LessonSerializer
 )
 
 
@@ -296,11 +296,13 @@ class EnrollmentTestCase(APITestCase):
             username="TestUnauthUser",
             password="test"
         )
-        cls.unauth_user.enrollments.add(cls.course)
+        cls.enrollment = cls.unauth_user.enrollment_set.create(
+            course=cls.course
+        )
 
     def setUp(self):
         self.client.force_login(self.author.user)
-        self.serializer = CourseSerializer(self.course)
+        self.serializer = EnrollmentSerializer(self.enrollment)
 
     def test_enrollment_list(self):
         response = self.client.get(reverse(
