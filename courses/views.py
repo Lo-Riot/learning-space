@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import generics, status, permissions
 from courses.permissions import IsAuthorOrReadOnly
 
-from courses.models import Course, Lesson
+from courses.models import Course, Enrollment, Lesson
 from courses.serializers import (
     CourseSerializer, EnrollmentSerializer, LessonSerializer
 )
@@ -103,16 +103,8 @@ class EnrollmentList(generics.ListCreateAPIView):
         permissions.IsAuthenticatedOrReadOnly,
     ]
 
-    def get_serializer_class(self):
-        if self.request.method == "POST":
-            return EnrollmentSerializer
-        elif self.request.method == "GET":
-            return CourseSerializer
-
-        return self.serializer_class
-
     def get_queryset(self):
-        return Course.objects.filter(user__id=self.kwargs["pk"])
+        return Enrollment.objects.filter(user__id=self.kwargs["pk"])
 
     def post(self, request, pk):
         serializer = self.serializer_class(

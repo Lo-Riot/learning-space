@@ -32,11 +32,12 @@ class CourseSerializer(serializers.Serializer):
 
 class EnrollmentSerializer(serializers.Serializer):
     course = serializers.IntegerField(source='pk')
+    is_completed = serializers.BooleanField(read_only=True, default=False)
 
     def create(self, validated_data):
         course = Course.objects.get(**validated_data)
         user = User.objects.get(pk=self.context["user_pk"])
-        user.enrollments.add(course)
+        user.enrollment_set.create(course=course)
         return course
 
 

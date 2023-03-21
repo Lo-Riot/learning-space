@@ -15,6 +15,12 @@ class Course(models.Model):
     image = models.ImageField(upload_to='uploads/')
 
 
+class Enrollment(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    is_completed = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class Lesson(models.Model):
     name = models.CharField(max_length=50)
     content = models.TextField()
