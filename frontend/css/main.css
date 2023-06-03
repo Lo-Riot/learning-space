@@ -1,5 +1,5 @@
 .courses {
-    margin-top: 50px;
+    margin-top: 120px;
 }
 
 .rating {
@@ -13,3 +13,7 @@
 .footer {
     margin-top: 50px;
 }
+
+/* .carousel {
+    max-height: 500px;
+} */
