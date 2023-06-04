@@ -1,7 +1,16 @@
 "use strict";
 
-function getCards() {
-    // Does AJAX request to the backend, returns json
+function addCourses(url) {
+    // Does AJAX request to the backend
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.responseType = 'json';
+    xhr.send();
+
+    xhr.onload = function() {
+        let courses = xhr.response;
+        addCards(courses, document.querySelector("#courses"));
+    };
 }
 
 function addCards(cards, cardsElement) {
@@ -54,29 +63,9 @@ function addCards(cards, cardsElement) {
 
         colElement.appendChild(cardElement);
         cardsElement.appendChild(colElement);
-
-        // cardsElement.innerHTML += 
-        //     `<div class="col">
-        //         <div class="course card h-100">
-        //             <img src="./images/${card.image}" class="card-img-top" alt="Course preview">
-        //             <div class="card-body">
-        //                 <h5 class="card-title">${card.name}</h5>
-        //                 <p class="card-text">${card.description}</p>
-        //                 <!-- https://www.vecteezy.com/free-photos -->
-        //             </div>
-        //             <div class="rating ms-3 mb-3">
-        //                 ${stars}
-        //             </div>
-        //             <a href="#" class="stretched-link"></a>
-        //         </div>
-        //     </div>`.trim();
     }
 }
 
 window.onload = () => {
-    let courses = [
-        {id: 0, name: "Test1", description: "Description", rating: 5, image: "python-course-preview.webp", author: 1},
-        {id: 1, name: "Test2", description: "Description2", rating: 4, image: "python-course-preview.webp", author: 1},
-    ];
-    addCards(courses, document.querySelector("#courses"));
+    addCourses("http://127.0.0.1:8000/api/courses/");
 };
